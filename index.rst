@@ -46,9 +46,27 @@
 
 .. note::
 
-   **This technote is not yet published.**
+   **Overview.**
 
-   This document provides info on technical requirements to deploy CEs and RSEs at Rubin DFs (and DACs), as well as registering those info in Rubin Computing Resource Information Catalogue (CRIC) 
+   This document is intended for Rubin Data Facility (DF) and Data Access Center (DAC) administrators. 
+   It will provide the technical specification for CEs (Grid Computer Element) and RSEs (Rucio Storage 
+   Elelment) that will used at Rubin DFs and DACs, as well as instruction on registering these resources
+   to Rubin CRIC (Computing Resource Information Catalogue).
+
+   The CE and RSE information in CRIC will be used by Rubin's Panda system and Rucio system for data
+   processing.
+
+   Specification of Computing Element (CE)
+   =======================================
+
+   Specification of Rucio Storage Element (RSE)
+   ============================================
+
+   Registering Resources in CRIC
+   =============================
+
+
+on technical requirements to deploy CEs and RSEs at Rubin DFs (and DACs), as well as registering those info in Rubin Computing Resource Information Catalogue (CRIC) 
 
 .. Add content here.
 .. Do not include the document title (it's automatically added from metadata.yaml).
