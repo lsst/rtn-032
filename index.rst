@@ -55,11 +55,13 @@
 
 This document is intended for Rubin Data Facility (DF) and Data Access Center (DAC) administrators. 
 It will provide the technical specification for CEs (Grid Computer Element) and RSEs (Rucio Storage 
-Elelment) that will used at Rubin DFs and DACs, as well as instruction on registering these resources
-to Rubin CRIC `(Computing Resource Information Catalogue) <https://core-cric-docs.web.cern.ch/core-cric-docs/latest/xyz.html>`_.
+Elelment) that will used at Rubin DFs and DACs. This document will also provide instruction on 
+registering these resources to the Rubin CRIC `(Computing Resource Information Catalogue) 
+<https://core-cric-docs.web.cern.ch/core-cric-docs/latest/xyz.html>`_.
 
-The CE and RSE information in CRIC will be used by Rubin's Panda system and Rucio system for data
-processing. In the future, it is possible that their usage scope will go beyond the Rubin Data 
+The CE and RSE information in CRIC will be used by Rubin's Panda workflow management system and 
+Rucio distributed data management system for data
+production. In the future, it is possible that their usage scope will go beyond the Rubin Data 
 Release Production (DRP).
 
 .. _AA-mechanism:
@@ -67,15 +69,15 @@ Release Production (DRP).
 Authentication and Authorization Mechanism in DRP
 =================================================
 Rubin Data Release Production will use X509 and VOMS for authentication and authorization. The Virtual
-Organization (VO) name for Rubin is "lsst". Administrators can register themselves at `Rubin VOMS 
+Organization (VO) name for Rubin is "lsst". Administrators can register themselves at the `Rubin VOMS 
 server <https://voms.slac.stanford.edu:8443/voms/lsst>`_, subject to approval (a X509 certificate 
-needs to be loaded in the web browser in order to access the URL)
+needs to be loaded in the web browser in order to access the VOMS server URL)
 
 Rubin will use the following VO attributes for Panda job execution and data movement.
 
-* **/lsst**: Rucio download
-* **/lsst/Role=pilot**: Panda job execution and Rucio upload and download
-* **/lsst/Role=ddmopr**: Rucio data transfer, upload and download
+* **/lsst**: for Rucio download
+* **/lsst/Role=pilot**: for Panda (production) job submission and Rucio upload and download
+* **/lsst/Role=ddmopr**: for Rucio data transfer, upload, download and deletion
 
 Specification of Computing Element (CE)
 =======================================
@@ -88,27 +90,27 @@ In addition, the following are also needed on the ARC-CE host in order for it to
 
 #. /etc/grid-security/certificates (or another location defined by Unix environment variable $X509_CERT_DIR).
 #. /etc/grid-security/vomsdir (or another location defined by Unix environment variable $X509_VOMS_DIR).
-#. A client tools/library to submit jobs to DFs' local batch systems.
+#. A client tools/library to submit jobs to DF's local batch system.
 
 HTCondor-CE version 8 and early releases of version of 9 are also supported. But HTCondor-CE will 
-likely drop support of GSI/X509 authentication in version 9.3+. 
+likely drop support of GSI/X509 authentication in version 9.3 and beyond. 
 
-There is currently no plan to require CEs are DACs.
+There is currently no plan to require a CE at DACs.
 
 Requirement on batch nodes
 =============================
 The following are required for batch nodes:
 
-#. CentOS 7 x86_64 or equivalent
+#. x86_64 CentOS 7 or equivalent
 #. Outbound TCP connection. NAT is acceptable
-#. mount /cvmfs/sw.lsst.eu
+#. /cvmfs/sw.lsst.eu
 #. valid /etc/grid-security/certificates and /etc/grid-security/vomsdir
 
 So far there is no requirement for the number of core and RAM per core (This may change in the 
 future). The following are recommended for batch nodes:
 
 * At USDF, batch nodes have 4GB+ local scratch space per core
-* Singularity container rpm.
+* Singularity container.
 
 Specification of Rucio Storage Element (RSE)
 ================================================
@@ -123,8 +125,8 @@ Xrootd storage (including Xrootd on shared Posix file system such as Lustre and 
 Xrootd storage) and s3 storage use `variant of Xrootd service to provide HTTP and xrootd TPCs 
 <https://xrootd-howto.readthedocs.io/en/latest/tpc/#an-example-of-wlcg-tpc-configuration-with-x509-authentication>`_. 
 
-Rubin may support a subset of the above storage systems, depend what local accessing protocols 
-Rubin will use. Currently it is the s3 protocol, though plain webdav/HTTP protocol is also 
+Depend what **local data accessing protocols** Rubin will use, Rubin may support a subset of the above 
+storage systems. Currently this protocol is **s3**, though plain webdav/HTTP protocol is also 
 supported. This is not a final list.
 
 Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against 
@@ -138,15 +140,16 @@ Registering Resources in CRIC
 ==============================
 The CEs and (in the future) RSEs at DFs and DACs will need to be registered in the CRIC, in order 
 for Panda and Rucio to use them. Rubin is currently using a `CRIC instance at CERN <https://datalake-cric.cern.ch>`_.
-So for now, you will need a CERN account in order to add info to the CRIC. You browser will also 
-need a valid X509 certificate. This instance currently have many place referring to "ATLAS". "ATLAS"
-will be removed in the future but for now, think of "ATLAS XYZ" as "Rubin XYZ". In the future, 
-USDF will host the Rubin CRIC.
+So for now a CERN account is needed in order to add info to this CRIC. Your browser will also 
+need a valid X509 certificate. This instance currently have many place referring to "ATLAS". All 
+the reference to "ATLAS"
+will be removed in the future but for now, think of "ATLAS XYZ" as "Rubin XYZ". Eventually, 
+the USDF will host the Rubin CRIC.
 
 Configuring CE and Panda Queue in CRIC
 ---------------------------------------
 
-There are two main lines of configurations in CRIC for CE and Panda Queue:
+There are two main lines of configurations in CRIC for CEs and Panda Queues:
 
 * Federation -> Resource Center (RC) Site -> Computer Element
 * ATLAS Site -> Panda Site -> Panda Queue
@@ -154,12 +157,12 @@ There are two main lines of configurations in CRIC for CE and Panda Queue:
 The Federation is configured. It is `"Rubin" <https://datalake-cric.cern.ch/core/federation/detail/Rubin/>`_.
 (This way of using "Federation" is not the same as what ATLAS uses, but maybe less confusing, though
 we may change it in the future. If changed, it will unlikely to have impact on other configurations).
-For other configuration items above:
+For other configuration items:
 
-#. `Create Resource Center (RC) Site <https://datalake-cric.cern.ch/core/rcsite/create/>`_, 
-   `(reference RC site: "SLAC-Rubin") <https://datalake-cric.cern.ch/core/rcsite/detail/SLAC-Rubin/>`_.
-#. `Create Computer Element <https://datalake-cric.cern.ch/core/ce/create/>`_, 
-   `(reference Computer Element: "SLAC-Rubin-CE-ARC-CE") <https://datalake-cric.cern.ch/core/ce/detail/73/>`_.
+#. `Create Resource Center (RC) Site <https://datalake-cric.cern.ch/core/rcsite/create/>`_ 
+   (reference RC site: `"SLAC-Rubin") <https://datalake-cric.cern.ch/core/rcsite/detail/SLAC-Rubin/>`_.
+#. `Create Computer Element <https://datalake-cric.cern.ch/core/ce/create/>`_ 
+   (reference Computer Element: `"SLAC-Rubin-CE-ARC-CE") <https://datalake-cric.cern.ch/core/ce/detail/73/>`_.
 #. To create a new "ATLAS Site", go to `ATLAS site "SLAC" <https://datalake-cric.cern.ch/core/experimentsite/detail/SLAC/>`_ 
    and clone it. Change at least boxes "Site Name", "RC site", "admin contact" and "Object status".
 #. To create a new "Panda Site", go to `Panda site "SLAC" <https://datalake-cric.cern.ch/core/computeunit/detail/SLAC/>`_ 
@@ -170,7 +173,7 @@ For other configuration items above:
    `(from a list of Panda sites) <https://datalake-cric.cern.ch/core/computeunit/list/>`_, and add 
    your newly create Panda Queue to the Panda Site.
 
-Congratulation for your accomplishment. Please info the Panda team about the newly created Panda Queue.
+Mission accomplished! Please info the Panda team about the newly created Panda Queue.
 
 
 
