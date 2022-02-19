@@ -65,7 +65,7 @@ Release Production (DRP).
 .. _AA-mechanism:
 
 Authentication and Authorization Mechanism in DRP
-=================================================
+-------------------------------------------------
 Rubin Data Release Production will use X509 and VOMS for authentication and authorization. The Virtual 
 Organization (VO) name for Rubin is "lsst". Administrators can register themselves at `Rubin VOMS server
 <https://voms.slac.stanford.edu:8443/voms/lsst>`_, subject to approval (a X509 certificate needs to be
@@ -78,7 +78,7 @@ Rubin will use the following VO attributes for Panda job execution and data move
 * **/lsst/Role=ddmopr**: Rucio data transfer, upload and download
 
 Specification of Computing Element (CE)
-=======================================
+---------------------------------------
 Rubin recommends their DFs to use a `ARC-CE version 6 <http://www.nordugrid.org/arc/arc6/admins/ce_index.html>`_
 as the gateway to their local batch systems. Rubin's workflow
 management system, Panda will submit jobs to the ARC-CE via its REST interface. The ARC-CE should be configured
@@ -95,10 +95,28 @@ support of GSI/X509 authentication in version 9.3+.
 
 
 Specification of Rucio Storage Element (RSE)
-============================================
+--------------------------------------------
+Rubin will use the Thirty Party Copy (TPC) mechanism developed by the LHC/WLCG community, in particular, the 
+HTTP TPC (xrootd TPC is acceptable if necessary). The TPC service can either come from the storage system 
+provider, or by using a Xrootd based standalone service. The latter covers a number of Posix storage, s3
+storage, and storages that uses xrootd or HTTP protocols.
+
+If you are using a `dCache system <https://www.dcache.org>`_, the HTTP TPC and xrootd TPC are already supported.
+Similar storage systems like EOS, DPM also support TPC.
+
+Xrootd storage (including Xrootd on shared Posix file system such as Lustre and GPFS, and non-local Xrootd 
+storage) and s3 storage use `variant of Xrootd service to provide HTTP and xrootd TPCs 
+<https://xrootd-howto.readthedocs.io/en/latest/>`_. 
+
+Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against RSEs. The
+required VO support is listed in the above :ref:`Authz section<AA-mechanism>`.
+
+In the future, we may also ask storage systems to provide periodic dumps (list of files) to discover 
+dark and missing data.
+
 
 Registering Resources in CRIC
-=============================
+-----------------------------------
 
 on technical requirements to deploy CEs and RSEs at Rubin DFs (and DACs), as well as registering those info in Rubin Computing Resource Information Catalogue (CRIC) 
 
