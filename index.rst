@@ -173,6 +173,9 @@ For other configuration items:
 #. It is possible that you may need to go back to your newly created Panda Site 
    `(from a list of Panda sites) <https://datalake-cric.cern.ch/core/computeunit/list/>`_, and add 
    your newly create Panda Queue to the Panda Site.
+#. From `a list of Panda queues <https://datalake-cric.cern.ch/atlas/pandaqueue/list/>`_, click the
+   hyper link to the newly created Panda queue, then click "Manage attached Queues" |rarr| "Search Queues".
+   Check the newly create CE (Computing Element) and click "Add select queues".
 
 Mission accomplished! Please info the Panda team about the newly created Panda Queue.
 
