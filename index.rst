@@ -66,10 +66,10 @@ Release Production (DRP).
 
 Authentication and Authorization Mechanism in DRP
 -------------------------------------------------
-Rubin Data Release Production will use X509 and VOMS for authentication and authorization. The Virtual 
-Organization (VO) name for Rubin is "lsst". Administrators can register themselves at `Rubin VOMS server
-<https://voms.slac.stanford.edu:8443/voms/lsst>`_, subject to approval (a X509 certificate needs to be
-loaded in the web browser in order to access the URL)
+Rubin Data Release Production will use X509 and VOMS for authentication and authorization. The Virtual
+Organization (VO) name for Rubin is "lsst". Administrators can register themselves at `Rubin VOMS 
+server <https://voms.slac.stanford.edu:8443/voms/lsst>`_, subject to approval (a X509 certificate 
+needs to be loaded in the web browser in order to access the URL)
 
 Rubin will use the following VO attributes for Panda job execution and data movement.
 
@@ -81,8 +81,8 @@ Specification of Computing Element (CE)
 ---------------------------------------
 Rubin recommends their DFs to use a `ARC-CE version 6 <http://www.nordugrid.org/arc/arc6/admins/ce_index.html>`_
 as the gateway to their local batch systems. Rubin's workflow
-management system, Panda will submit jobs to the ARC-CE via its REST interface. The ARC-CE should be configured
-to support the VO attributes listed in the above :ref:`Authz section<AA-mechanism>`. 
+management system, Panda will submit jobs to the ARC-CE via its REST interface. The ARC-CE should 
+be configured to support the VO attributes listed in the above :ref:`Authz section<AA-mechanism>`. 
 
 In addition, the following are also needed on the ARC-CE host in order for it to function:
 
@@ -90,26 +90,30 @@ In addition, the following are also needed on the ARC-CE host in order for it to
 #. /etc/grid-security/vomsdir (or another location defined by Unix environment variable $X509_VOMS_DIR).
 #. A client tools/library to submit jobs to DFs' local batch systems.
 
-HTCondor-CE version 8 and early releases of version of 9 are also supported. But HTCondor-CE will likely drop
-support of GSI/X509 authentication in version 9.3+. 
+HTCondor-CE version 8 and early releases of version of 9 are also supported. But HTCondor-CE will 
+likely drop support of GSI/X509 authentication in version 9.3+. 
 
+There is currently no plan to require CEs are DACs.
 
 Specification of Rucio Storage Element (RSE)
 --------------------------------------------
-Rubin will use the Thirty Party Copy (TPC) mechanism developed by the LHC/WLCG community, in particular, the 
-HTTP TPC (xrootd TPC is acceptable if necessary). The TPC service can either come from the storage system 
-provider, or by using a Xrootd based standalone service. The latter covers a number of Posix storage, s3
-storage, and storages that uses xrootd or HTTP protocols.
+Rubin will use the Thirty Party Copy (TPC) mechanism developed by the LHC/WLCG community, in 
+particular, the HTTP TPC (xrootd TPC is acceptable if necessary) to move data. The WLCG TPC 
+supports dCache, EOS, DPM, Xrootd, s3, and Posix storage systems. 
 
-If you are using a `dCache system <https://www.dcache.org>`_, the HTTP TPC and xrootd TPC are already supported.
-Similar storage systems like EOS, DPM also support TPC.
+If you are using a `dCache system <https://www.dcache.org>`_, EOS and DPM, the HTTP TPC and xrootd 
+TPC support are built in to those systems.
 
-Xrootd storage (including Xrootd on shared Posix file system such as Lustre and GPFS, and non-local Xrootd 
-storage) and s3 storage use `variant of Xrootd service to provide HTTP and xrootd TPCs 
-<https://xrootd-howto.readthedocs.io/en/latest/>`_. 
+Xrootd storage (including Xrootd on shared Posix file system such as Lustre and GPFS, and non-local 
+Xrootd storage) and s3 storage use `variant of Xrootd service to provide HTTP and xrootd TPCs 
+<https://xrootd-howto.readthedocs.io/en/latest/tpc/#an-example-of-wlcg-tpc-configuration-with-x509-authentication>`_. 
 
-Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against RSEs. The
-required VO support is listed in the above :ref:`Authz section<AA-mechanism>`.
+Rubin may support a subset of the above storage systems, depend what local accessing protocols 
+Rubin will use. Currently it is the s3 protocol, though plain webdav/HTTP protocol is also 
+supported. This is not a final list.
+
+Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against 
+RSEs. The required VO support is listed in the above :ref:`Authz section<AA-mechanism>`.
 
 In the future, we may also ask storage systems to provide periodic dumps (list of files) to discover 
 dark and missing data.
@@ -117,8 +121,15 @@ dark and missing data.
 
 Registering Resources in CRIC
 -----------------------------------
+The CEs and (in the future) RSEs at DFs and DACs will need to be registered in the CRIC, in order 
+for Panda and Rucio to use them. Rubin is currently using a `CRIC instance at CERN <https://datalake-cric.cern.ch>`_.
+In the future, this instance will be hosted by the USDF. So for now, you will need a CERN account 
+in order to add info to the CRIC. You browser will also need a valid X509 certificate.
 
-on technical requirements to deploy CEs and RSEs at Rubin DFs (and DACs), as well as registering those info in Rubin Computing Resource Information Catalogue (CRIC) 
+
+
+
+
 
 .. Add content here.
 .. Do not include the document title (it's automatically added from metadata.yaml).
