@@ -51,6 +51,8 @@
 .. contents:: Table of Contents
   :depth: 1
 
+.. include:: <isonum.txt>
+
 **Overview.**
 
 This document is intended for Rubin Data Facility (DF) and Data Access Center (DAC) administrators. 
@@ -135,7 +137,6 @@ RSEs. The required VO support is listed in the above :ref:`Authz section<AA-mech
 In the future, we may also ask storage systems to provide periodic dumps (list of files) to discover 
 dark and missing data.
 
-
 Registering Resources in CRIC
 ==============================
 The CEs and (in the future) RSEs at DFs and DACs will need to be registered in the CRIC, in order 
@@ -151,8 +152,8 @@ Configuring CE and Panda Queue in CRIC
 
 There are two main lines of configurations in CRIC for CEs and Panda Queues:
 
-* Federation -> Resource Center (RC) Site -> Computer Element
-* ATLAS Site -> Panda Site -> Panda Queue
+* Federation |rarr| Resource Center (RC) Site |rarr| Computer Element
+* ATLAS Site |rarr| Panda Site |rarr| Panda Queue
 
 The Federation is configured. It is `"Rubin" <https://datalake-cric.cern.ch/core/federation/detail/Rubin/>`_.
 (This way of using "Federation" is not the same as what ATLAS uses, but maybe less confusing, though
