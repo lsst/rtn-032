@@ -179,6 +179,12 @@ For other configuration items, followin the following instructions:
 
 Mission accomplished! Please info the Panda team about the newly created Panda Queue.
 
+Configuring RSE in CRIC
+---------------------------------------
+
+Comming later. Currently not required
+
+
 .. Add content here.
 .. Do not include the document title (it's automatically added from metadata.yaml).
 
