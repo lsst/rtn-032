@@ -146,6 +146,13 @@ need a valid X509 certificate. This instance currently have many place referring
 reference to "ATLAS" will be removed in the future but for now, think of "ATLAS XYZ" as "Rubin XYZ"
 when add/configuring resources. Eventually, the USDF will host the Rubin CRIC.
 
+Request privileges
+------------------
+When asked for login, use CERN SSO and type in your CERN username and password. Then check in the
+top menu bar for a green key shape icon. Click it and request "ATLAS_ADMIN" privilege (or at least, 
+"PANDA ADMINS" privilege. You will need to wait for the privilege to be setup before you can 
+continue with the following steps.
+
 Configuring CE and Panda Queue in CRIC
 ---------------------------------------
 
