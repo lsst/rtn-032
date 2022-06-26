@@ -201,12 +201,12 @@ that is proposed to the USDF execution team, using real BPS submittion.
 A simple validation will use an ARC CE client or HTCondor to submit a job to the WS interface (not
 GridFTP interface) of a site's ARC CE, and check the following
 
-1. CE job submission.
-1. Availablity of /cvmfs/sw.lsst.eu
-1. Outbound TCP connection. This can be as simple as a ping to a USDF DTN node.
-1. OS version and availability of software such as Singularity, client tools to (object) storage.
-1. Available posix storage layout (df -h)
-1. Pointers to local scrach space, object store, Grid infrastructure (CAs, vomsdir), DBs, secrets.
+#. CE job submission.
+#. Availablity of /cvmfs/sw.lsst.eu
+#. Outbound TCP connection. This can be as simple as a ping to a USDF DTN node.
+#. OS version and availability of software such as Singularity, client tools to (object) storage.
+#. Available posix storage layout (df -h)
+#. Pointers to local scrach space, object store, Grid infrastructure (CAs, vomsdir), DBs, secrets.
 
 Detail ARC CE ADL job (or HTCondor job) example is available at ... (under construction)
 
