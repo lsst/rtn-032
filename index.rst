@@ -194,7 +194,8 @@ Comming later. Currently not required
 Site Validation
 =================
 
-The following describes a set of simple validation of a site. It is not a replacement of validation 
+The following describes a set of simple validation to check site environment. It is not a replacement 
+of validation 
 that is proposed to the USDF execution team, using real BPS submittion.
 
 A simple validation will use an ARC CE client or HTCondor to submit a job to the WS interface (not
@@ -205,7 +206,7 @@ GridFTP interface) of a site's ARC CE, and check the following
 1. Outbound TCP connection. This can be as simple as a ping to a USDF DTN node.
 1. OS version and availability of software such as Singularity, client tools to (object) storage.
 1. Available posix storage layout (df -h)
-1. Pointers to local scrach space, object store, Grid infrastructure (CAs, vomsdir), secrets.
+1. Pointers to local scrach space, object store, Grid infrastructure (CAs, vomsdir), DBs, secrets.
 
 Detail ARC CE ADL job (or HTCondor job) example is available at ... (under construction)
 
