@@ -93,9 +93,7 @@ In addition, the following are also needed on a ARC-CE host in order for it to f
 #. /etc/grid-security/certificates (or another location defined by Unix environment variable **X509_CERT_DIR**).
 #. /etc/grid-security/vomsdir (or another location defined by Unix environment variable **X509_VOMS_DIR**).
 #. A client tools/library to submit jobs to DF's local batch system.
-#. Enable ENV/PROXY: this ARC CE Run Time Environment (RTE) creates a delegated x509 proxy and makes it available
-to the corresponding batch job via Unix environment variable $X509_USER_PROXY. To enable this RTE, one command 
-**arcctl rte enable ENV/PROXY**. 
+#. Enable ENV/PROXY: this ARC CE Run Time Environment (RTE) creates a delegated x509 proxy and makes it available to the corresponding batch job via Unix environment variable $X509_USER_PROXY. To enable this RTE, one command **arcctl rte enable ENV/PROXY**. 
 
 In Rubin, we agreed that Panda/Harvester needs to expicitly request ENV/PROXY when submitting jobs. In HTCondor 
 job submission (not to confused with HTCondor-CE) using **grid_resource = arc ..."**, this means adding
@@ -215,7 +213,7 @@ GridFTP interface) of a site's ARC CE, and check the following
 #. Available posix storage layout (df -h)
 #. Pointers to local scrach space, object store, Grid infrastructure (CAs, vomsdir), DBs, secrets.
 
-Detail ARC CE ADL job (or HTCondor job) example is available at ... (under construction)
+Detail ARC CE xRSL job (or HTCondor job) example is available at ... (under construction)
 
 .. Add content here.
 .. Do not include the document title (it's automatically added from metadata.yaml).
