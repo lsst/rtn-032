@@ -46,7 +46,7 @@
 
 .. note::
 
-   Branch: u/wyang007/panda-rucio-cric. Preliminary. 
+   Branch: main
 
 .. contents:: Table of Contents
   :depth: 1
