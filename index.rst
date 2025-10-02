@@ -83,6 +83,8 @@ Rubin will use the following VO attributes for Panda job execution and data move
 
 Specification of Computing Element (CE)
 =======================================
+(This is for Data Facility (DF) only. There is currently no plan to require a CE at DACs.)
+
 Rubin recommends their DFs to use a `ARC-CE version 6 <http://www.nordugrid.org/arc/arc6/admins/ce_index.html>`_
 as the gateway to their local batch systems. Rubin's workflow
 management system, Panda will submit jobs to the ARC-CE via its REST interface. Rubin ARC-CEs should 
@@ -128,73 +130,117 @@ supports dCache, EOS, DPM, Xrootd, s3, and Posix storage systems.
 If you are using a `dCache system <https://www.dcache.org>`_, EOS and DPM, the HTTP TPC and xrootd 
 TPC support are built in to those systems.
 
+Xrootd installation
+-------------------
+In most cases, a standalone Xrootd installation is sufficient. Open Science Grid (OSG) provides instructions
+on `how to install Xrootd on EL 9 system<https://osg-htc.org/docs/data/xrootd/install-standalone/>`_. After
+finishing the Installing Xrootd section, follow the instructions in the next section (in this document)
+to configure Xrootd.
+
+This will install:
+* various Xrootd rpms
+* several voms relate rpms
+* /etc/grid-security/certificates and /etc/grid-security/vomsdir. Note that the info in /etc/grid-security/vomsdir/lsstis out-of-date. 
+* /etc/vomses (only used by client). The lines referring to "lsst" is out-of-date.
+
+For the above "out-of-date", please refer to the `Rubin VOMS server configuration page
+<https://voms.slac.stanford.edu:8443/voms/lsst/configuration/configuration.action>`_. for up-to-date info.
+If you can not see the above URL, ask Data Facility team or iDAC coordination team for help. The following
+is the current info (as of 2025-10-01) on the VOMS configuration page.
+
+Two lines in /etc/vomses:
+
+    "lsst" "voms.slac.stanford.edu" "15003" "/DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu" "lsst"
+
+    "lsst" "voms.hec.lancs.ac.uk" "15003" "/C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk" "lsst"
+
+Two .lsc files in /etc/grid-security/vomsdir/lsst, two lines per file
+
+    1. voms.slac.stanford.edu.lsc
+
+    /DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu
+
+    /C=US/O=Internet2/CN=InCommon RSA IGTF Server CA 3
+
+    2. voms.hec.lancs.ac.uk.lsc
+
+    /C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk
+
+    /C=UK/O=eScienceCA/OU=Authority/CN=UK e-Science CA 2B
+
+Xrootd confgiruation
+--------------------
 Xrootd storage (including Xrootd on shared Posix file system such as Lustre and GPFS, and non-local 
-Xrootd storage) and s3 storage use `variants of Xrootd service to provide HTTP and xrootd TPCs 
+Xrootd storage) and s3 storage. `Example configuration can be found at the Xrootd HOW-To page 
 <https://xrootd-howto.readthedocs.io/en/latest/tpc/#an-example-of-wlcg-tpc-configuration-with-x509-authentication>`_. 
 
-Depend what **local data accessing protocols** Rubin will use, Rubin may support a subset of the above 
-storage systems. Currently this protocol is **s3**, though plain webdav/HTTP protocol is also 
-supported. This is not a final list.
+Rucio and FTS will manage the data transfer among RSEs, and use VOMS attribute from the 'lsst' VO to authorize 
+access to RSEs, as described in the above :ref:`Authz section<AA-mechanism>`. This corresponds to the following 
+lines in the Xrootd authorization file (usually /etc/xrootd/auth_file):
 
-Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against 
-RSEs. The required VO support is listed in the above :ref:`Authz section<AA-mechanism>`.
+    = lsstddmopr o: lsst g: /lsst r: ddmopr
+
+    x lsstddmopr /dir rwildn
+
+    o lsst /dir rl
 
 In the future, we may also ask storage systems to provide periodic dumps (list of files) to discover 
 dark and missing data.
 
-Registering Resources in CRIC
-==============================
-The CEs and (in the future) RSEs at DFs and DACs will need to be registered in the CRIC, in order 
-for Panda and Rucio to use them. Rubin is currently using a `CRIC instance at CERN <https://datalake-cric.cern.ch>`_.
-So for now a CERN account is needed in order to add info to this CRIC. Your browser will also 
-need a valid X509 certificate. This instance currently have many place referring to "ATLAS". All 
-reference to "ATLAS" will be removed in the future but for now, think of "ATLAS XYZ" as "Rubin XYZ"
-when add/configuring resources. Eventually, the USDF will host the Rubin CRIC.
-
-Request privileges
-------------------
-When asked for login, use CERN SSO and type in your CERN username and password. Then check in the
-top menu bar for a green key shape icon. Click it and request "ATLAS_ADMIN" privilege (or at least, 
-"PANDA ADMINS" privilege. You will need to wait for the privilege to be setup before you can 
-continue with the following steps.
-
-Configuring CE and Panda Queue in CRIC
----------------------------------------
-
-There are two main lines of configurations in CRIC for CEs and Panda Queues:
-
-* Federation |rarr| Resource Center (RC) Site |rarr| Computer Element
-* ATLAS Site |rarr| Panda Site |rarr| Panda Queue
-
-The Federation is configured. It is `"Rubin" <https://datalake-cric.cern.ch/core/federation/detail/Rubin/>`_.
-(This way of using "Federation" is not the same as how ATLAS uses it, but maybe less confusing, and
-will not impact the function of CE and Panda Queues).
-
-For other configuration items, followin the following instructions:
-
-#. `Create Resource Center (RC) Site <https://datalake-cric.cern.ch/core/rcsite/create/>`_ 
-   (reference RC site: `"SLAC-Rubin") <https://datalake-cric.cern.ch/core/rcsite/detail/SLAC-Rubin/>`_.
-#. `Create Computer Element <https://datalake-cric.cern.ch/core/ce/create/>`_ 
-   (reference Computer Element: `"SLAC-Rubin-CE-ARC-CE") <https://datalake-cric.cern.ch/core/ce/detail/73/>`_.
-#. To create a new "ATLAS Site", go to `ATLAS site "SLAC" <https://datalake-cric.cern.ch/core/experimentsite/detail/SLAC/>`_ 
-   and clone it. Change at least boxes "Site Name", "RC site", "admin contact" and "Object status".
-#. To create a new "Panda Site", go to `Panda site "SLAC" <https://datalake-cric.cern.ch/core/computeunit/detail/SLAC/>`_ 
-   and clone it. Change boxes "Name", "ATLAS Site", and "Object status".
-#. To create a new "Panda Queue", go to `Panda queue "SLAC_TEST" <https://datalake-cric.cern.ch/atlas/pandaqueue/detail/SLAC_TEST/>`_ 
-   and clone it. Change at least boxes "Name", "Panda site", "Object status".
-#. It is possible that you may need to go back to your newly created Panda Site 
-   `(from a list of Panda sites) <https://datalake-cric.cern.ch/core/computeunit/list/>`_, and add 
-   your newly create Panda Queue to the Panda Site.
-#. From `a list of Panda queues <https://datalake-cric.cern.ch/atlas/pandaqueue/list/>`_, click the
-   hyper link to the newly created Panda queue, then click "Manage attached Queues" |rarr| "Search Queues".
-   Check the newly create CE (Computing Element) and click "Add select queues".
-
-Mission accomplished! Please info the Panda team about the newly created Panda Queue.
-
-Configuring RSE in CRIC
----------------------------------------
-
-Comming later. Currently not required
+.. No longer needed
+   Registering Resources in CRIC
+   ==============================
+   The CEs and (in the future) RSEs at DFs and DACs will need to be registered in the CRIC, in order 
+   for Panda and Rucio to use them. Rubin is currently using a `CRIC instance at CERN <https://datalake-cric.cern.ch>`_.
+   So for now a CERN account is needed in order to add info to this CRIC. Your browser will also 
+   need a valid X509 certificate. This instance currently have many place referring to "ATLAS". All 
+   reference to "ATLAS" will be removed in the future but for now, think of "ATLAS XYZ" as "Rubin XYZ"
+   when add/configuring resources. Eventually, the USDF will host the Rubin CRIC.
+   
+   Request privileges
+   ------------------
+   When asked for login, use CERN SSO and type in your CERN username and password. Then check in the
+   top menu bar for a green key shape icon. Click it and request "ATLAS_ADMIN" privilege (or at least, 
+   "PANDA ADMINS" privilege. You will need to wait for the privilege to be setup before you can 
+   continue with the following steps.
+   
+   Configuring CE and Panda Queue in CRIC
+   ---------------------------------------
+   
+   There are two main lines of configurations in CRIC for CEs and Panda Queues:
+   
+   * Federation |rarr| Resource Center (RC) Site |rarr| Computer Element
+   * ATLAS Site |rarr| Panda Site |rarr| Panda Queue
+   
+   The Federation is configured. It is `"Rubin" <https://datalake-cric.cern.ch/core/federation/detail/Rubin/>`_.
+   (This way of using "Federation" is not the same as how ATLAS uses it, but maybe less confusing, and
+   will not impact the function of CE and Panda Queues).
+   
+   For other configuration items, followin the following instructions:
+   
+   #. `Create Resource Center (RC) Site <https://datalake-cric.cern.ch/core/rcsite/create/>`_ 
+      (reference RC site: `"SLAC-Rubin") <https://datalake-cric.cern.ch/core/rcsite/detail/SLAC-Rubin/>`_.
+   #. `Create Computer Element <https://datalake-cric.cern.ch/core/ce/create/>`_ 
+      (reference Computer Element: `"SLAC-Rubin-CE-ARC-CE") <https://datalake-cric.cern.ch/core/ce/detail/73/>`_.
+   #. To create a new "ATLAS Site", go to `ATLAS site "SLAC" <https://datalake-cric.cern.ch/core/experimentsite/detail/SLAC/>`_ 
+      and clone it. Change at least boxes "Site Name", "RC site", "admin contact" and "Object status".
+   #. To create a new "Panda Site", go to `Panda site "SLAC" <https://datalake-cric.cern.ch/core/computeunit/detail/SLAC/>`_ 
+      and clone it. Change boxes "Name", "ATLAS Site", and "Object status".
+   #. To create a new "Panda Queue", go to `Panda queue "SLAC_TEST" <https://datalake-cric.cern.ch/atlas/pandaqueue/detail/SLAC_TEST/>`_ 
+      and clone it. Change at least boxes "Name", "Panda site", "Object status".
+   #. It is possible that you may need to go back to your newly created Panda Site 
+      `(from a list of Panda sites) <https://datalake-cric.cern.ch/core/computeunit/list/>`_, and add 
+      your newly create Panda Queue to the Panda Site.
+   #. From `a list of Panda queues <https://datalake-cric.cern.ch/atlas/pandaqueue/list/>`_, click the
+      hyper link to the newly created Panda queue, then click "Manage attached Queues" |rarr| "Search Queues".
+      Check the newly create CE (Computing Element) and click "Add select queues".
+   
+   Mission accomplished! Please info the Panda team about the newly created Panda Queue.
+   
+   Configuring RSE in CRIC
+   ---------------------------------------
+   
+   Comming later. Currently not required
 
 Site Validation
 =================
