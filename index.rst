@@ -148,20 +148,25 @@ For the above "out-of-date", please refer to the `Rubin VOMS server configuratio
 If you can not see the above URL, ask Data Facility team or iDAC coordination team for help. The following
 is the current info (as of 2025-10-01) on the VOMS configuration page.
 
-.. voms configuration info::
-   strings in /etc/vomses for this vo:
-   "lsst" "voms.slac.stanford.edu" "15003" "/DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu" "lsst"
-   "lsst" "voms.hec.lancs.ac.uk" "15003" "/C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk" "lsst"
+Two lines in /etc/vomses:
 
-   Two .lsc files in /etc/grid-security/vomsdir/lsst for this VOMS server:
+    "lsst" "voms.slac.stanford.edu" "15003" "/DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu" "lsst"
 
-   1. voms.slac.stanford.edu.lsc
-   /DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu
-   /C=US/O=Internet2/CN=InCommon RSA IGTF Server CA 3
+    "lsst" "voms.hec.lancs.ac.uk" "15003" "/C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk" "lsst"
 
-   2. voms.hec.lancs.ac.uk.lsc
-   /C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk
-   /C=UK/O=eScienceCA/OU=Authority/CN=UK e-Science CA 2B
+Two .lsc files in /etc/grid-security/vomsdir/lsst, two lines per file
+
+    1. voms.slac.stanford.edu.lsc
+
+    /DC=org/DC=incommon/C=US/ST=California/O=Stanford University/CN=voms.slac.stanford.edu
+
+    /C=US/O=Internet2/CN=InCommon RSA IGTF Server CA 3
+
+    2. voms.hec.lancs.ac.uk.lsc
+
+    /C=UK/O=eScience/OU=Lancaster/L=Physics/CN=voms.hec.lancs.ac.uk
+
+    /C=UK/O=eScienceCA/OU=Authority/CN=UK e-Science CA 2B
 
 Xrootd confgiruation
 --------------------
@@ -169,13 +174,15 @@ Xrootd storage (including Xrootd on shared Posix file system such as Lustre and 
 Xrootd storage) and s3 storage. `Example configuration can be found at the Xrootd HOW-To page 
 <https://xrootd-howto.readthedocs.io/en/latest/tpc/#an-example-of-wlcg-tpc-configuration-with-x509-authentication>`_. 
 
-Rucio and FTS will manage the data transfer among RSEs. Users may also download or upload against 
-RSEs. The required VO support is listed in the above :ref:`Authz section<AA-mechanism>`. This corresponds to
-the following lines in the Xrootd authorization file (usually /etc/xrootd/auth_file):
-.. code -block:: none
-   = lsstddmopr o: lsst g: /lsst r: ddmopr
-   x lsstddmopr /dir rwildn 
-   o lsst /dir rl
+Rucio and FTS will manage the data transfer among RSEs, and use VOMS attribute from the 'lsst' VO to authorize 
+access to RSEs, as described in the above :ref:`Authz section<AA-mechanism>`. This corresponds to the following 
+lines in the Xrootd authorization file (usually /etc/xrootd/auth_file):
+
+    = lsstddmopr o: lsst g: /lsst r: ddmopr
+
+    x lsstddmopr /dir rwildn
+
+    o lsst /dir rl
 
 In the future, we may also ask storage systems to provide periodic dumps (list of files) to discover 
 dark and missing data.
